@@ -1,11 +1,21 @@
-from flask import Flask
+import os
+
+from flask import Flask, redirect
 from flask_graphql import GraphQLView
+from dotenv import load_dotenv
 
 from schema.schema import schema
 from repository.hello_worl_example import HelloWorldExample
 
+load_dotenv()
+
 app = Flask(__name__)
 app.debug = True
+
+url = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+username = os.getenv("NEO4J_USER", "neo4j")
+password = os.getenv("NEO4J_PASSWORD", "Str@ngPassword")
+database = os.getenv("NEO4J_DATABASE", "neo4j")
 
 app.add_url_rule(
     '/graphql',
@@ -16,9 +26,14 @@ app.add_url_rule(
     )
 )
 
+
+@app.route('/')
+def default_route():
+    return redirect('/graphql', code=302)
+
+
 if __name__ == '__main__':
     app.run(port=8080)
     # greeter = HelloWorldExample("bolt://localhost:7687", "neo4j", "Str@ngPassword")
     # greeter.print_greeting("hello, world")
     # greeter.close()
-
