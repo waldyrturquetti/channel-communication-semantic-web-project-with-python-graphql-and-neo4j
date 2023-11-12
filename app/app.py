@@ -12,10 +12,12 @@ load_dotenv()
 app = Flask(__name__)
 app.debug = True
 
-url = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+uri = os.getenv("NEO4J_URI", "bolt://127.0.0.1:7687")
 username = os.getenv("NEO4J_USER", "neo4j")
 password = os.getenv("NEO4J_PASSWORD", "Str@ngPassword")
 database = os.getenv("NEO4J_DATABASE", "neo4j")
+
+port = int(os.getenv("PORT", 8080))
 
 app.add_url_rule(
     '/graphql',
@@ -33,7 +35,7 @@ def default_route():
 
 
 if __name__ == '__main__':
-    app.run(port=8080)
-    # greeter = HelloWorldExample("bolt://localhost:7687", "neo4j", "Str@ngPassword")
-    # greeter.print_greeting("hello, world")
-    # greeter.close()
+    greeter = HelloWorldExample(uri, username, password)
+    greeter.print_greeting("hello, world")
+    greeter.close()
+    app.run(port=port)
