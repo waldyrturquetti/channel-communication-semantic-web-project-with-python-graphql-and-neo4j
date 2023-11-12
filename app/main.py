@@ -4,7 +4,7 @@ from flask import Flask, redirect
 from flask_graphql import GraphQLView
 from dotenv import load_dotenv
 
-from schema.schema import schema
+from app.schema.schema import schema
 from repository.hello_worl_example import HelloWorldExample
 
 load_dotenv()
@@ -35,7 +35,4 @@ def default_route():
 
 
 if __name__ == '__main__':
-    greeter = HelloWorldExample(uri, username, password)
-    greeter.print_greeting("hello, world")
-    greeter.close()
     app.run(port=port)

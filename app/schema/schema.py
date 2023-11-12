@@ -1,55 +1,48 @@
 import graphene
 
+from app.repository.user_repository import UserRepository
 
-class Book(graphene.ObjectType):
+user_repository = UserRepository()
+
+
+class User(graphene.ObjectType):
     class Meta:
         interfaces = (graphene.relay.Node,)
 
+    # id = graphene.ID()
     name = graphene.String()
+    birthday = graphene.Date()
+    born_country = graphene.String()
+    gender = graphene.String()
+    height = graphene.Float()
 
 
-class BookConnection(graphene.relay.Connection):
-    class Meta:
-        node = Book
-
-
-class CreateBook(graphene.Mutation):
+class CreateUser(graphene.Mutation):
     class Input:
         name = graphene.String(required=True)
-        author = graphene.String(required=True)
+        birthday = graphene.Date(required=True)
+        born_country = graphene.String(required=True)
+        gender = graphene.String(required=True)
+        height = graphene.Float(required=False)
 
-    book = graphene.Field(Book)
+    user = graphene.Field(User)
 
-    def mutate(self, info, name, author):
-        # Do any logic for saving etc here
-        # Return data at the end
-        # save to db
-        book = Book(name=name)
-
-        return CreateBook(
-            book=book,
+    def mutate(self, info, name, birthday, born_country, gender, height):
+        user = User(name=name, birthday=birthday, born_country=born_country, gender=gender, height=height)
+        return CreateUser(
+            user=user,
         )
 
 
 class Query(graphene.ObjectType):
-    book = graphene.Field(Book, name=graphene.String())
-    books = graphene.relay.connection.IterableConnectionField(
-        BookConnection, name_contains=graphene.String(),
-    )
+    user = graphene.Field(User, name=graphene.String())
 
-    def resolve_book(self, info, name):
-        # Perform any look-up logic you want here.
-        return Book(name=name)
-
-    def resolve_books(self, info, name_contains):
-        # Filter a collection here and return an array of ObjectTypes
-        return [
-            Book(name=name_contains),
-        ]
+    def resolve_user(root, info, name):
+        return user_repository.get_user_by_name(name)
 
 
 class Mutations(graphene.ObjectType):
-    create_book = CreateBook.Field()
+    create_user = CreateUser.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutations)

@@ -12,6 +12,7 @@ class HelloWorldExample:
     def print_greeting(self, message):
         with self.driver.session() as session:
             greeting = session.execute_write(self._create_and_return_greeting, message)
+            # session.execute_read(self._create_and_return_greeting, message)
             print(greeting)
 
     @staticmethod
