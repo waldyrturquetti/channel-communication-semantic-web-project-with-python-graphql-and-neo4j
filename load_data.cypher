@@ -11,7 +11,7 @@ CREATE (Julio:User {name:'Julio', Gender:'Male', Birthday:'28-09-1999', BornCoun
 CREATE (Waldyr:User {name:'Waldyr', Gender:'Male', Birthday:'30-12-1999', BornCountry:'Brazil', Height:'1,80'});
 CREATE (Della:User {name:'Della', Gender:'Female', Birthday:'28-09-1999', BornCountry:'Cape Verde', Height:'1,76'});
 CREATE (Joao:Contact {type:'Person', name:'Joao', Gender:'Male', Birthday:'28-09-1970', BornCountry:'Brazil', Height:'1,76'});
-CREATE (Jú:Contact {name:'Jú', Gender:'Male', Birthday:'30-12-1960', BornCountry:'Brazil', Height:'1,70'});
+CREATE (`Jú`:Contact {name:'Jú', Gender:'Male', Birthday:'30-12-1960', BornCountry:'Brazil', Height:'1,70'});
 CREATE (`+5512912341234`:PhoneNumber {country_id:'+55', number:'12912341234'});
 CREATE (`+5512912341235`:PhoneNumber {country_id:'+55', number:'12912341235'});
 CREATE (`+5512912341236`:PhoneNumber {country_id:'+55', number:'12912341236'});
@@ -21,6 +21,7 @@ CREATE (`julio1@email.com`:`E-Mail` {email:'julio1@email.com'});
 CREATE (`julio2@utfpr.com`:`E-Mail` {email:'julio2@utfpr.com'});
 CREATE (`waldyr@email.com`:`E-Mail` {email:'waldyr@email.com'});
 CREATE (`della@email.com`:`E-Mail` {email:'della@email.com'});
+CREATE (`ju@email.com`:`E-Mail` {email:'ju@email.com'});
 CREATE (Instagram:Application {app_name:'Instagram'});
 CREATE (Email:ChannelCommunication {type:'E-mail'});
 CREATE (SMS:ChannelCommunication {type:'SMS'});
@@ -42,14 +43,14 @@ CREATE (Joao)-[:IS_FATHER {affection_weight:1}]->(Julio);
 
 MATCH
 (Waldyr:User {name:'Waldyr'}),
-(Jú:Contact {name:'Jú'})
-CREATE (Waldyr)-[:IS_NEPHEW {affection_weight:0.8}]->(Jú);
+(`Jú`:Contact {name:'Jú'})
+CREATE (Waldyr)-[:IS_NEPHEW {affection_weight:0.8}]->(`Jú`);
 
 
 MATCH
 (Waldyr:User {name:'Waldyr'}),
-(Jú:Contact {name:'Jú'})
-CREATE (Jú)-[:IS_UNCLE {affection_weight:0.8}]->(Waldyr);
+(`Jú`:Contact {name:'Jú'})
+CREATE (`Jú`)-[:IS_UNCLE {affection_weight:0.8}]->(Waldyr);
 
 
 MATCH
@@ -75,6 +76,10 @@ MATCH
 (`della@email.com`:`E-Mail` {email:'della@email.com'})
 CREATE (Della)-[:HAVE {preference_weight:1}]->(`della@email.com`);
 
+MATCH
+(Ju:Contact {name:'Jú'}),
+(`ju@email.com`:`E-Mail` {email:'ju@email.com'})
+CREATE (Ju)-[:HAVE {preference_weight:1}]->(`ju@email.com`);
 
 MATCH
 (Waldyr:User {name:'Waldyr'}),
@@ -112,8 +117,6 @@ MATCH
 CREATE (`julio1@email.com`)-[:USE]->(Email);
 
 
-
-
 MATCH
 (Email:ChannelCommunication {type:'E-mail'}),
 (`julio2@utfpr.com`:`E-Mail` {email:'julio2@utfpr.com'})
@@ -130,6 +133,11 @@ MATCH
 (Email:ChannelCommunication {type:'E-mail'}),
 (`della@email.com`:`E-Mail` {email:'della@email.com'})
 CREATE (`della@email.com`)-[:USE]->(Email);
+
+MATCH
+(Email:ChannelCommunication {type:'E-mail'}),
+(`ju@email.com`:`E-Mail` {email:'ju@email.com'})
+CREATE (`ju@email.com`)-[:USE]->(Email);
 
 
 MATCH
