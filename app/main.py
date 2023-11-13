@@ -28,11 +28,9 @@ app.add_url_rule(
     )
 )
 
-
 @app.route('/')
 def default_route():
     return redirect('/graphql', code=302)
-
 
 if __name__ == '__main__':
     app.run(port=port)
