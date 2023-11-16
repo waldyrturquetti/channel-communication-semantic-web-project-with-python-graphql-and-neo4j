@@ -2,7 +2,6 @@ import os
 
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
-from typing_extensions import LiteralString
 
 load_dotenv()
 
