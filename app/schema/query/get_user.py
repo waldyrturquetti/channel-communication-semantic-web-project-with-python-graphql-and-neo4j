@@ -5,7 +5,6 @@ from app.model.user_entity import User
 
 user_repository = UserRepository()
 
-
 class GetUser(object):
     get_user = graphene.Field(User, name=graphene.String())
 

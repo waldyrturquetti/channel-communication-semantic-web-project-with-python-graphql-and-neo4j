@@ -5,6 +5,7 @@ class User(graphene.ObjectType):
         interfaces = (graphene.relay.Node,)
 
     # id = graphene.ID()
+    type = graphene.String()
     name = graphene.String()
     birthday = graphene.String()
     born_country = graphene.String()
