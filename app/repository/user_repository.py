@@ -21,21 +21,10 @@ class UserRepository:
     def _get_user_by_name(tx, name):
         nodes = tx.run("MATCH (x:User) WHERE x.name = $name RETURN x", name=name)
         results = [record for record in nodes.data()]
+        print(results)
         return serialize_user(results[0]['x'])
 
     def get_user_by_name(self, name):
-        with self.driver.session() as session:
-            user = session.execute_read(self._get_user_by_name, name)
-            self.close()
-            return user
-
-    @staticmethod
-    def _get_user_commchannels(tx, name):
-        nodes = tx.run("MATCH (x:User) WHERE x.name = $name RETURN x", name=name)
-        results = [record for record in nodes.data()]
-        return serialize_user(results[0]['x'])
-
-    def get_user_commchannels(self, name):
         with self.driver.session() as session:
             user = session.execute_read(self._get_user_by_name, name)
             self.close()
