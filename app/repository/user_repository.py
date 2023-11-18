@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
+from app.model.user_entity import serialize_user
 
 load_dotenv()
 
@@ -30,11 +31,3 @@ class UserRepository:
             self.close()
             return user
 
-def serialize_user(user):
-    return {
-        "name": user["name"],
-        "birthday": user["Birthday"],
-        "born_country": user["BornCountry"],
-        "gender": user["Gender"],
-        "height": user["Height"],
-    }

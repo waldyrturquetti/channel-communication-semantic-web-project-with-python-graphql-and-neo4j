@@ -10,3 +10,12 @@ class User(graphene.ObjectType):
     born_country = graphene.String()
     gender = graphene.String()
     height = graphene.String()
+
+def serialize_user(user):
+    return {
+        "name": user["name"],
+        "birthday": user["Birthday"],
+        "born_country": user["BornCountry"],
+        "gender": user["Gender"],
+        "height": user["Height"],
+        }

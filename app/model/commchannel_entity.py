@@ -5,4 +5,4 @@ class CommChannel(graphene.ObjectType):
         interfaces = (graphene.relay.Node,)
 
     # id = graphene.ID()
-    cc = graphene.List(graphene.JSONString)
+    type = graphene.String()
