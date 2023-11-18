@@ -1,12 +1,12 @@
 import graphene
 
-from app.repository.user_repository import UserRepository
-from app.model.user_entity import User
+from app.repository.commchannel_repository import CommChannelRepository
+from app.model.commchannel_entity import CommChannel
 
-user_repository = UserRepository()
+commchannel_repository = CommChannelRepository()
 
 class GetUserCommChannels(object):
-    get_user_commchannels = graphene.Field(User, name=graphene.String())
+    get_user_commchannels = graphene.List(CommChannel, name=graphene.String())
 
-    def resolve_get_user_commchannels(root, info, name):
-        return user_repository.get_user_commchannels(name)
+    def resolve_get_user_commchannels(self, info, name):
+        return commchannel_repository.get_user_commchannels(name)

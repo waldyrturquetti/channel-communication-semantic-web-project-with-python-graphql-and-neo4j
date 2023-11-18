@@ -2,7 +2,6 @@ import os
 
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
-from app.model.user_entity import serialize_user
 
 load_dotenv()
 
@@ -11,7 +10,7 @@ username = os.getenv("NEO4J_USER", "neo4j")
 password = os.getenv("NEO4J_PASSWORD", "Str@ngPassword")
 database = os.getenv("NEO4J_DATABASE", "neo4j")
 
-class UserRepository:
+class CommChannelRepository:
     def __init__(self):
         self.driver = GraphDatabase.driver(uri, auth=(username, password))
 
@@ -19,15 +18,13 @@ class UserRepository:
         self.driver.close()
 
     @staticmethod
-    def _get_user_by_name(tx, name):
-        nodes = tx.run("MATCH (x:User) WHERE x.name = $name RETURN x", name=name)
+    def _get_user_commchannels(tx, name):
+        nodes = tx.run("MATCH (u:User {name:$name})-[:HAVE]->(a)-[:USE]->(cc:ChannelCommunication) RETURN collect(distinct cc)", name=name)
         results = [record for record in nodes.data()]
-        print(results)
-        return serialize_user(results[0]['x'])
+        return results[0]['collect(distinct cc)']
 
-    def get_user_by_name(self, name):
+    def get_user_commchannels(self, name):
         with self.driver.session() as session:
-            user = session.execute_read(self._get_user_by_name, name)
+            commchannel = session.execute_read(self._get_user_commchannels, name)
             self.close()
-            return user
-
+            return commchannel
