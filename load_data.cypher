@@ -86,10 +86,6 @@ MATCH
 (`della@email.com`:`E-Mail` {email:'della@email.com'})
 CREATE (Della)-[:HAVE {preference_weight:1}]->(`della@email.com`);
 
-MATCH
-(Ju:Contact {name:'Jú'}),
-(`ju@email.com`:`E-Mail` {email:'ju@email.com'})
-CREATE (Ju)-[:HAVE {preference_weight:1}]->(`ju@email.com`);
 
 MATCH
 (Waldyr:User {name:'Waldyr'}),
@@ -144,11 +140,6 @@ MATCH
 (`della@email.com`:`E-Mail` {email:'della@email.com'})
 CREATE (`della@email.com`)-[:USE]->(Email);
 
-MATCH
-(Email:ChannelCommunication {type:'E-mail'}),
-(`ju@email.com`:`E-Mail` {email:'ju@email.com'})
-CREATE (`ju@email.com`)-[:USE]->(Email);
-
 
 MATCH
 (`+5512912341234`:PhoneNumber {country_id:'+55', number:'12912341234'}),
@@ -183,55 +174,55 @@ CREATE (`+5512912341238`)-[:USE]->(SMS);
 MATCH
 (Julio:User {name:'Julio'}),
 (Instagram:Application {app_name:'Instagram'})
-CREATE (Julio)-[:USE {preference_weight:1}]->(Instagram);
+CREATE (Julio)-[:HAVE {preference_weight:1}]->(Instagram);
 
 
 MATCH
 (Instagram:Application {app_name:'Instagram'}),
-(PushNotification:ChannelCommunication {type:'Push Notification'})
+(PushNotification:ChannelCommunication {type:'PushNotification'})
 CREATE (Instagram)-[:USE]->(PushNotification);
 
 
 MATCH
 (Instagram:Application {app_name:'Instagram'}),
 (DirectMessage:ChannelCommunication {type:'DirectMessage'})
-CREATE (Instagram)-[:HAVE]->(DirectMessage);
+CREATE (Instagram)-[:USE]->(DirectMessage);
 
 
 MATCH
 (Della:User {name:'Della'}),
 (WhatsApp:Application {app_name:'WhatsApp'})
-CREATE (Della)-[:USE {preference_weight:1}]->(WhatsApp);
+CREATE (Della)-[:HAVE {preference_weight:1}]->(WhatsApp);
 
 
 MATCH
 (WhatsApp:Application {app_name:'WhatsApp'}),
 (PushNotification:ChannelCommunication {type:'PushNotification'})
-CREATE (WhatsApp)-[:HAVE]->(PushNotification);
+CREATE (WhatsApp)-[:USE]->(PushNotification);
 
 
 MATCH
 (WhatsApp:Application {app_name:'WhatsApp'}),
 (DirectMessage:ChannelCommunication {type:'DirectMessage'})
-CREATE (WhatsApp)-[:HAVE]->(DirectMessage);
+CREATE (WhatsApp)-[:USE]->(DirectMessage);
 
 
 MATCH
 (Instagram:Application {app_name:'Instagram'}),
 (Publication:ChannelCommunication {type:'Publication'})
-CREATE (Instagram)-[:HAVE]->(Publication);
+CREATE (Instagram)-[:USE]->(Publication);
 
 
 MATCH
 (Della:User {name:'Della'}),
 (SendPicture:Action {type:'Send picture'})
-CREATE (Della)-[:PERFORM_ACTION]->(SendPicture);
+CREATE (Della)-[:PERFORM_ACTION {count:1}]->(SendPicture);
 
 
 MATCH
 (WhatsApp:Application {app_name:'WhatsApp'}),
 (SendPicture:Action {type:'Send picture'})
-CREATE (SendPicture)-[:USING]->(WhatsApp);
+CREATE (SendPicture)-[:USE]->(WhatsApp);
 
 
 MATCH
@@ -243,13 +234,13 @@ CREATE (SendPicture)-[:THROUGH_A]->(DirectMessage);
 MATCH
 (Julio:User {name:'Julio'}),
 (ShareFile:Action {type:'Share File'})
-CREATE (Julio)-[:PERFORM_ACTION]->(ShareFile);
+CREATE (Julio)-[:PERFORM_ACTION {count:1}]->(ShareFile);
 
 
 MATCH
 (WhatsApp:Application {app_name:'WhatsApp'}),
 (ShareFile:Action {type:'Share File'})
-CREATE (ShareFile)-[:USING]->(WhatsApp);
+CREATE (ShareFile)-[:USE]->(WhatsApp);
 
 
 MATCH
@@ -261,13 +252,13 @@ CREATE (ShareFile)-[:THROUGH_A]->(DirectMessage);
 MATCH
 (Julio:User {name:'Julio'}),
 (SendTextMessage:Action {type:'Send Text Message'})
-CREATE (Julio)-[:PERFORM_ACTION]->(SendTextMessage);
+CREATE (Julio)-[:PERFORM_ACTION {count:1}]->(SendTextMessage);
 
 
 MATCH
 (WhatsApp:Application {app_name:'WhatsApp'}),
 (SendTextMessage:Action {type:'Send Text Message'})
-CREATE (SendTextMessage)-[:USING]->(WhatsApp);
+CREATE (SendTextMessage)-[:USE]->(WhatsApp);
 
 
 MATCH
@@ -278,14 +269,20 @@ CREATE (SendTextMessage)-[:THROUGH_A]->(DirectMessage);
 
 MATCH
 (Julio:User {name:'Julio'}),
+(WhatsApp:Application {app_name:'WhatsApp'})
+CREATE (Julio)-[:HAVE {preference_weight:1}]->(WhatsApp);
+
+
+MATCH
+(Julio:User {name:'Julio'}),
 (SendVoiceMessage:Action {type:'Send Voice Message'})
-CREATE (Julio)-[:PERFORM_ACTION]->(SendVoiceMessage);
+CREATE (Julio)-[:PERFORM_ACTION {count:1}]->(SendVoiceMessage);
 
 
 MATCH
 (WhatsApp:Application {app_name:'WhatsApp'}),
 (SendVoiceMessage:Action {type:'Send Voice Message'})
-CREATE (SendVoiceMessage)-[:USING]->(WhatsApp);
+CREATE (SendVoiceMessage)-[:USE]->(WhatsApp);
 
 
 MATCH
@@ -297,13 +294,19 @@ CREATE (SendVoiceMessage)-[:THROUGH_A]->(DirectMessage);
 MATCH
 (LiveConcert:Event {title:'Live Concert'}),
 (CreatePublication:Action {type:'Create Publication'})
-CREATE (LiveConcert)-[:PERFORM_ACTION]->(CreatePublication);
+CREATE (LiveConcert)-[:PERFORM_ACTION {count:1}]->(CreatePublication);
+
+
+MATCH
+(LiveConcert:Event {title:'Live Concert'}),
+(Instagram:Application {app_name:'Instagram'})
+CREATE (LiveConcert)-[:USE]->(Instagram);
 
 
 MATCH
 (Instagram:Application {app_name:'Instagram'}),
 (CreatePublication:Action {type:'Create Publication'})
-CREATE (CreatePublication)-[:USING]->(Instagram);
+CREATE (CreatePublication)-[:USE]->(Instagram);
 
 
 MATCH
@@ -330,4 +333,3 @@ CREATE (Waldyr)-[:WAS_IN]->(LiveConcert);
 MATCH
 (Julio:User {name:'Julio'}), (OnlineProgrammingWorkshop:Event {title:'Online Programming Workshop'})
 CREATE (Julio)-[:WAS_IN]->(OnlineProgrammingWorkshop);
-

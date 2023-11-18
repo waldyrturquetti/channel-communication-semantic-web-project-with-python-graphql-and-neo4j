@@ -41,6 +41,11 @@ WHERE SINGLE(node IN nodes(path) WHERE node:User) AND NONE(node IN nodes(path) W
 RETURN collect(distinct u);
 
 // Retrieve the PATH between a SPECIFIC USER to direct related to all channel communication
-MATCH path = (cc:ChannelCommunication)<-[*]-(u:User)
-WHERE SINGLE(node IN nodes(path) WHERE node:User) AND NONE(node IN nodes(path) WHERE node:Contact) AND u.name='Waldyr'
-RETURN path;
+MATCH path = (u:User {name:'Waldyr'})-[h:HAVE]->(a)-[*]->(cc:ChannelCommunication) RETURN path;
+
+// Retrieve the PATH between a SPECIFIC USER to direct related to Best channel communication
+MATCH path = (u:User {name:'Julio'})-[h:HAVE]->(a)-[*]->(cc:ChannelCommunication)
+WITH max(h.preference_weight) as maxPreference
+MATCH path = (u:User {name:'Julio'})-[h:HAVE]->(a)-[*]->(cc:ChannelCommunication)
+WHERE h.preference_weight = maxPreference
+return path;
