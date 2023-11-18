@@ -39,3 +39,8 @@ RETURN path;
 MATCH path = (cc:ChannelCommunication {type: 'E-mail'})<-[*]-(u:User)
 WHERE SINGLE(node IN nodes(path) WHERE node:User) AND NONE(node IN nodes(path) WHERE node:Contact)
 RETURN collect(distinct u);
+
+// Retrieve the PATH between a SPECIFIC USER to direct related to all channel communication
+MATCH path = (cc:ChannelCommunication)<-[*]-(u:User)
+WHERE SINGLE(node IN nodes(path) WHERE node:User) AND NONE(node IN nodes(path) WHERE node:Contact) AND u.name='Waldyr'
+RETURN path;

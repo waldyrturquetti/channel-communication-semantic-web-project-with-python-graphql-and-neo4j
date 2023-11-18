@@ -2,9 +2,7 @@
 // This is an initialization script for the communication channel graph.
 // Run it only once. ;)
 
-
 //Use `MATCH (n) DETACH DELETE n` to start over.
-
 
 // Nodes Creation
 CREATE (Julio:User {name:'Julio', Gender:'Male', Birthday:'28-09-1999', BornCountry:'Brazil', Height:'1,76'});
@@ -23,9 +21,21 @@ CREATE (`waldyr@email.com`:`E-Mail` {email:'waldyr@email.com'});
 CREATE (`della@email.com`:`E-Mail` {email:'della@email.com'});
 CREATE (`ju@email.com`:`E-Mail` {email:'ju@email.com'});
 CREATE (Instagram:Application {app_name:'Instagram'});
+CREATE (WhatsApp:Application {app_name:'WhatsApp'});
 CREATE (Email:ChannelCommunication {type:'E-mail'});
 CREATE (SMS:ChannelCommunication {type:'SMS'});
 CREATE (PushNotification:ChannelCommunication {type:'Push Notification'});
+CREATE (DirectMessage:ChannelCommunication {type:'DirectMessage'});
+CREATE (Publication:ChannelCommunication {type:'Publication'});
+CREATE (BirthdayParty:Event {title:'Birthday Party',nature:'Social', type:'Presencial', startdate:'2023-12-14T17:30:00', enddate:'2023-12-14T21:00:00', place:'Users Home', context:'Celebrating a users birthday with friends and family'});
+CREATE (TeamMeeting:Event {title:'Team Meeting',nature:'Professional', type:'Online', startdate:'2023-11-18T10:00:00', enddate:'2023-11-18T12:00:00', place:'Teams', context:'Discussion of projects and planning tasks for the week.'});
+CREATE (LiveConcert:Event {title:'Live Concert',nature:'Cultural', type:'Presencial', startdate:'2023-12-20T20:30:00', enddate:'2023-12-20T22:30:00', place:'Concert Arena', context:'Live performance by a famous band'});
+CREATE (OnlineProgrammingWorkshop:Event {title:'Online Programming Workshop',nature:'Educational', type:'Online', startdate:'2023-11-20T14:30:00', enddate:'2023-11-20T17:30:00', place:'zoom', context:'Practical session to learn new programming techniques'});
+CREATE (SendPicture:Action {type:'Send picture'});
+CREATE (SendVoiceMessage:Action {type:'Send Voice Message'});
+CREATE (SendTextMessage:Action {type:'Send Text Message'});
+CREATE (CreatePublication:Action {type:'Create Publication'});
+CREATE (ShareFile:Action {type:'Share File'});
 
 
 // Relationship Creation
@@ -173,10 +183,151 @@ CREATE (`+5512912341238`)-[:USE]->(SMS);
 MATCH
 (Julio:User {name:'Julio'}),
 (Instagram:Application {app_name:'Instagram'})
-CREATE (Julio)-[:USE]->(Instagram);
+CREATE (Julio)-[:USE {preference_weight:1}]->(Instagram);
 
 
 MATCH
 (Instagram:Application {app_name:'Instagram'}),
 (PushNotification:ChannelCommunication {type:'Push Notification'})
 CREATE (Instagram)-[:USE]->(PushNotification);
+
+
+MATCH
+(Instagram:Application {app_name:'Instagram'}),
+(DirectMessage:ChannelCommunication {type:'DirectMessage'})
+CREATE (Instagram)-[:HAVE]->(DirectMessage);
+
+
+MATCH
+(Della:User {name:'Della'}),
+(WhatsApp:Application {app_name:'WhatsApp'})
+CREATE (Della)-[:USE {preference_weight:1}]->(WhatsApp);
+
+
+MATCH
+(WhatsApp:Application {app_name:'WhatsApp'}),
+(PushNotification:ChannelCommunication {type:'PushNotification'})
+CREATE (WhatsApp)-[:HAVE]->(PushNotification);
+
+
+MATCH
+(WhatsApp:Application {app_name:'WhatsApp'}),
+(DirectMessage:ChannelCommunication {type:'DirectMessage'})
+CREATE (WhatsApp)-[:HAVE]->(DirectMessage);
+
+
+MATCH
+(Instagram:Application {app_name:'Instagram'}),
+(Publication:ChannelCommunication {type:'Publication'})
+CREATE (Instagram)-[:HAVE]->(Publication);
+
+
+MATCH
+(Della:User {name:'Della'}),
+(SendPicture:Action {type:'Send picture'})
+CREATE (Della)-[:PERFORM_ACTION]->(SendPicture);
+
+
+MATCH
+(WhatsApp:Application {app_name:'WhatsApp'}),
+(SendPicture:Action {type:'Send picture'})
+CREATE (SendPicture)-[:USING]->(WhatsApp);
+
+
+MATCH
+(DirectMessage:ChannelCommunication {type:'DirectMessage'}),
+(SendPicture:Action {type:'Send picture'})
+CREATE (SendPicture)-[:THROUGH_A]->(DirectMessage);
+
+
+MATCH
+(Julio:User {name:'Julio'}),
+(ShareFile:Action {type:'Share File'})
+CREATE (Julio)-[:PERFORM_ACTION]->(ShareFile);
+
+
+MATCH
+(WhatsApp:Application {app_name:'WhatsApp'}),
+(ShareFile:Action {type:'Share File'})
+CREATE (ShareFile)-[:USING]->(WhatsApp);
+
+
+MATCH
+(DirectMessage:ChannelCommunication {type:'DirectMessage'}),
+(ShareFile:Action {type:'Share File'})
+CREATE (ShareFile)-[:THROUGH_A]->(DirectMessage);
+
+
+MATCH
+(Julio:User {name:'Julio'}),
+(SendTextMessage:Action {type:'Send Text Message'})
+CREATE (Julio)-[:PERFORM_ACTION]->(SendTextMessage);
+
+
+MATCH
+(WhatsApp:Application {app_name:'WhatsApp'}),
+(SendTextMessage:Action {type:'Send Text Message'})
+CREATE (SendTextMessage)-[:USING]->(WhatsApp);
+
+
+MATCH
+(DirectMessage:ChannelCommunication {type:'DirectMessage'}),
+(SendTextMessage:Action {type:'Send Text Message'})
+CREATE (SendTextMessage)-[:THROUGH_A]->(DirectMessage);
+
+
+MATCH
+(Julio:User {name:'Julio'}),
+(SendVoiceMessage:Action {type:'Send Voice Message'})
+CREATE (Julio)-[:PERFORM_ACTION]->(SendVoiceMessage);
+
+
+MATCH
+(WhatsApp:Application {app_name:'WhatsApp'}),
+(SendVoiceMessage:Action {type:'Send Voice Message'})
+CREATE (SendVoiceMessage)-[:USING]->(WhatsApp);
+
+
+MATCH
+(DirectMessage:ChannelCommunication {type:'DirectMessage'}),
+(SendVoiceMessage:Action {type:'Send Voice Message'})
+CREATE (SendVoiceMessage)-[:THROUGH_A]->(DirectMessage);
+
+
+MATCH
+(LiveConcert:Event {title:'Live Concert'}),
+(CreatePublication:Action {type:'Create Publication'})
+CREATE (LiveConcert)-[:PERFORM_ACTION]->(CreatePublication);
+
+
+MATCH
+(Instagram:Application {app_name:'Instagram'}),
+(CreatePublication:Action {type:'Create Publication'})
+CREATE (CreatePublication)-[:USING]->(Instagram);
+
+
+MATCH
+(Publication:ChannelCommunication {type:'Publication'}),
+(CreatePublication:Action {type:'Create Publication'})
+CREATE (CreatePublication)-[:THROUGH_A]->(Publication);
+
+
+MATCH
+(Della:User {name:'Della'}), (BirthdayParty:Event {title: "Birthday Party"})
+CREATE (Della)-[:WAS_IN]->(BirthdayParty);
+
+
+MATCH
+(Julio:User {name:'Julio'}), (TeamMeeting:Event {title:'Team Meeting'})
+CREATE (Julio)-[:WAS_IN]->(TeamMeeting);
+
+
+MATCH
+(Waldyr:User {name:'Waldyr'}), (LiveConcert:Event {title:'Live Concert'})
+CREATE (Waldyr)-[:WAS_IN]->(LiveConcert);
+
+
+MATCH
+(Julio:User {name:'Julio'}), (OnlineProgrammingWorkshop:Event {title:'Online Programming Workshop'})
+CREATE (Julio)-[:WAS_IN]->(OnlineProgrammingWorkshop);
+
