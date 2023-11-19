@@ -46,6 +46,6 @@ MATCH path = (u:User {name:'Waldyr'})-[h:HAVE]->(a)-[*]->(cc:ChannelCommunicatio
 // Retrieve the PATH between a SPECIFIC USER to direct related to Best channel communication
 MATCH path = (u:User {name:'Julio'})-[h:HAVE]->(a)-[*]->(cc:ChannelCommunication)
 WITH max(h.preference_weight) as maxPreference
-MATCH path = (u:User {name:'Julio'})-[h:HAVE]->(a)-[*]->(cc:ChannelCommunication)
-WHERE h.preference_weight = maxPreference
-return path;
+MATCH finalPath = (user:User {name:'Julio'})-[have:HAVE]->(resource)-[*]->(cc:ChannelCommunication)
+WHERE have.preference_weight = maxPreference
+return finalPath;
