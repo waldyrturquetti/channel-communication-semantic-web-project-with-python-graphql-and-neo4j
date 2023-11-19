@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from neo4j import GraphDatabase
 
 from app.dto.comm_channels_and_comm_resources_dto import serialize_comm_channels_and_comm_resources
+from app.dto.actions_by_comm_channel_dto import serialize_action_by_comm_channel
+from app.dto.comm_resources_by_comm_channel_dto import serialize_comm_resources_by_comm_channel
 
 load_dotenv()
 
@@ -44,5 +46,29 @@ class CommChannelRepository:
     def get_user_comm_channels_and_comm_resources_by_user(self, user_name):
         with self.driver.session() as session:
             comm_channel = session.execute_read(self._get_user_comm_channels_and_comm_resources_by_user, user_name)
+            self.close()
+            return comm_channel
+
+    @staticmethod
+    def _get_comm_resources_by_comm_channel(tx, cc_type):
+        nodes = tx.run(
+            "MATCH path = (A)-[:USE]->(cc:ChannelCommunication {type:$cc_type}) RETURN A;", cc_type=cc_type)
+        return serialize_comm_resources_by_comm_channel(nodes.data())
+
+    def get_comm_resources_by_comm_channel(self, cc_type):
+        with self.driver.session() as session:
+            comm_channel = session.execute_read(self._get_comm_resources_by_comm_channel, cc_type)
+            self.close()
+            return comm_channel
+
+    @staticmethod
+    def _get_actions_by_comm_channel(tx, cc_type):
+        nodes = tx.run(
+            "MATCH path = (a:Action)-[:THROUGH_A]->(cc:ChannelCommunication {type:$cc_type}) RETURN a;", cc_type=cc_type)
+        return serialize_action_by_comm_channel(nodes.data())
+
+    def get_actions_by_comm_channel(self, cc_type):
+        with self.driver.session() as session:
+            comm_channel = session.execute_read(self._get_actions_by_comm_channel, cc_type)
             self.close()
             return comm_channel
