@@ -11,4 +11,4 @@ class GetCommChannelsAndCommResourcesByUser(object):
         graphene.List(CommChannelsAndCommResourcesDto, user_name=graphene.String()))
 
     def resolve_get_comm_channels_and_comm_resources_by_user(self, info, user_name):
-        return comm_channel_repository.get_user_comm_channels_and_comm_resources_by_user(user_name)
+        return comm_channel_repository.get_comm_channels_and_comm_resources_by_user(user_name)
