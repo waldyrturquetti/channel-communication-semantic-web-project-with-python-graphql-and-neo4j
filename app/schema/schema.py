@@ -9,6 +9,7 @@ from app.schema.query.get_usercontact_relationships import GetUserContactsRelati
 from app.schema.query.get_actions_by_comm_channel import GetActionByCommChannel
 from app.schema.query.get_comm_resources_by_comm_channel import GetCommResourcesByCommChannel
 from app.schema.query.get_the_best_comm_channels_and_comm_resources_by_user import GetTheBestCommChannelsAndCommResourcesByUser
+from app.schema.query.get_users_by_comm_channel import GetUsersByCommChannel
 
 
 class Query(GetUser,
@@ -18,6 +19,7 @@ class Query(GetUser,
             GetActionByCommChannel,
             GetCommResourcesByCommChannel,
             GetTheBestCommChannelsAndCommResourcesByUser,
+            GetUsersByCommChannel,
             graphene.ObjectType):
     pass
 

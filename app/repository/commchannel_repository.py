@@ -6,6 +6,7 @@ from neo4j import GraphDatabase
 from app.dto.comm_channels_and_comm_resources_dto import serialize_comm_channels_and_comm_resources
 from app.dto.actions_by_comm_channel_dto import serialize_action_by_comm_channel
 from app.dto.comm_resources_by_comm_channel_dto import serialize_comm_resources_by_comm_channel
+from app.dto.users_by_comm_channel_dto import serialize_users_by_comm_channel
 
 load_dotenv()
 
@@ -86,5 +87,18 @@ class CommChannelRepository:
     def get_the_best_comm_channels_and_comm_resources_by_user(self, user_name):
         with self.driver.session() as session:
             comm_channel = session.execute_read(self._get_the_best_comm_channels_and_comm_resources_by_user, user_name)
+            self.close()
+            return comm_channel
+
+    @staticmethod
+    def _get_users_by_comm_channel(tx, cc_type):
+        nodes = tx.run(
+            "MATCH path = (cc:ChannelCommunication {type:$cc_type})<-[*]-(a)<-[:HAVE]-(u:User) RETURN collect(distinct u);", cc_type=cc_type)
+        results = [record for record in nodes.data()]
+        return serialize_users_by_comm_channel(results[0]['collect(distinct u)'])
+
+    def get_users_by_comm_channel(self, cc_type):
+        with self.driver.session() as session:
+            comm_channel = session.execute_read(self._get_users_by_comm_channel, cc_type)
             self.close()
             return comm_channel
