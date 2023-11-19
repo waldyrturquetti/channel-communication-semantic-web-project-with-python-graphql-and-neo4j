@@ -38,15 +38,15 @@ class CommChannelRepository:
             return commchannel
 
     @staticmethod
-    def _get_user_comm_channels_and_comm_resources_by_user(tx, name):
+    def _get_comm_channels_and_comm_resources_by_user(tx, name):
         nodes = tx.run(
             "MATCH path = (u:User {name:$name})-[h:HAVE]->(a)-[*]->(cc:ChannelCommunication)"
             " RETURN u,PROPERTIES(h),a,cc;", name=name)
         return serialize_comm_channels_and_comm_resources(nodes.data())
 
-    def get_user_comm_channels_and_comm_resources_by_user(self, user_name):
+    def get_comm_channels_and_comm_resources_by_user(self, user_name):
         with self.driver.session() as session:
-            comm_channel = session.execute_read(self._get_user_comm_channels_and_comm_resources_by_user, user_name)
+            comm_channel = session.execute_read(self._get_comm_channels_and_comm_resources_by_user, user_name)
             self.close()
             return comm_channel
 
@@ -71,6 +71,22 @@ class CommChannelRepository:
     def get_actions_by_comm_channel(self, cc_type):
         with self.driver.session() as session:
             comm_channel = session.execute_read(self._get_actions_by_comm_channel, cc_type)
+            self.close()
+            return comm_channel
+
+    @staticmethod
+    def _get_the_best_comm_channels_and_comm_resources_by_user(tx, name):
+        nodes = tx.run(
+            "MATCH path = (u:User {name:$name})-[h:HAVE]->(a)-[*]->(cc:ChannelCommunication) "
+            "WITH max(h.preference_weight) as maxPreference "
+            "MATCH path = (user:User {name:$name})-[h:HAVE]->(a)-[*]->(cc:ChannelCommunication) "
+            "WHERE h.preference_weight = maxPreference "            
+            "RETURN PROPERTIES(h),a,cc;", name=name)
+        return serialize_comm_channels_and_comm_resources(nodes.data())
+
+    def get_the_best_comm_channels_and_comm_resources_by_user(self, user_name):
+        with self.driver.session() as session:
+            comm_channel = session.execute_read(self._get_the_best_comm_channels_and_comm_resources_by_user, user_name)
             self.close()
             return comm_channel
 

@@ -17,7 +17,7 @@ For create the nodes in Neo4j see the file [load_data](./load_data.cypher)
 
 #### Overview:
 
-![image](https://github.com/waldyrturquetti/semantic-web-project-communication-channel/assets/44614612/21b1f9bf-931d-4dc9-9a8c-5c372808cda5)
+![image](https://github.com/waldyrturquetti/semantic-web-project-communication-channel/assets/51680369/1568a770-a23c-4209-9833-86ae7d1abf8c)
 
 
 #### MATCH's
