@@ -1,4 +1,4 @@
-# Semanctic Web Project Communication Channel
+# Semanctic Web Project Communication Channel Graph Database
 
 ## Technologies
   - Python
